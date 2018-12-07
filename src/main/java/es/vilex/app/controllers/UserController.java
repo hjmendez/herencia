@@ -16,8 +16,9 @@ package es.vilex.app.controllers;
 
 import javax.annotation.ManagedBean;
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
-import org.primefaces.model.LazyDataModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import es.vilex.app.entities.User;
 import es.vilex.app.respositories.UserDao;
@@ -26,9 +27,13 @@ import es.vilex.app.respositories.UserDao;
 @ViewScoped // este es el scope por defecto
 public class UserController {
 
+  FacesContext context;
+
+
   private User user;
 
-  private LazyDataModel<User> userList;
+  @Autowired
+  private UserLazyList userList;
 
   private User[] selectedUsers;
 
@@ -39,16 +44,7 @@ public class UserController {
 
   @PostConstruct
   private void init() {
-    userList = new UserLazyList(dao);
-    user = new User();
-    // userList = new LazyDataModel<User>() {
-    // @Override
-    // public List<User> load(int first, int pageSize, String sortField, SortOrder sortOrder,
-    // Map<String, Object> filters) {
-    // setRowCount(11);
-    // return dao.findAll(PageRequest.of(first, pageSize)).getContent();
-    // }
-    // };
+    newUser();
   }
 
 
@@ -62,12 +58,13 @@ public class UserController {
   }
 
 
-  public LazyDataModel<User> getUserList() {
+
+  public UserLazyList getUserList() {
     return userList;
   }
 
 
-  public void setUserList(LazyDataModel<User> userList) {
+  public void setUserList(UserLazyList userList) {
     this.userList = userList;
   }
 
@@ -92,10 +89,31 @@ public class UserController {
   }
 
 
-  public void save() {
-    System.out.println("salvando");
+  // gestión de formulario
+  public void newUser() {
+    System.out.println("nuevo usuario");
+    user = new User();
   }
 
 
+  public void saveUser() {
+    System.out.println("salvando");
+    dao.save(user);
+    FacesContext.getCurrentInstance().addMessage(null,
+        new FacesMessage("Guardado", "Usuario guardado con éxito"));
+    newUser();
+  }
+
+
+  public void deleteUsers() {
+    System.out.println("borrando usuarios");
+    if (selectedUsers.length == 0) {
+      context.addMessage(null,
+          new FacesMessage("Eliminando", "Debe seleccionar un elemento de la tabla"));
+    }
+    for (User user : selectedUsers) {
+      dao.delete(user);
+    }
+  }
 
 }

@@ -11,7 +11,7 @@
 <h:body>
 	<h:form id="helloworld-form">
 
-		
+		<p:growl id="growl" showDetail="true" sticky="false" autoUpdate="true" life="1000"/>  
 		
 		<!-- Panel principal de la pagina -->
 		<p:focus context="panelPrincipal" />
@@ -20,12 +20,15 @@
 			<p:dataTable id="tabla"
 				lazy="true"
 				value="#{userController.userList}"
+				emptyMessage="No existen elementos"
 				var="user"
 				rowKey="#{user.id}" 
 				paginator="true" 
 				rows="5"
 				rowsPerPageTemplate="5,10,15" 				
 				filterEvent="enter"
+				sortBy="#{user.id}"
+				sortOrder="ascending"
 				selection="#{userController.selectedUsers}">
 					<p:column selectionMode="multiple" />
 					<p:column headerText="ID">
@@ -37,8 +40,26 @@
 			</p:dataTable>
 		</p:panel>
 		
-		<p:commandButton value="botón" actionListener="#{userController.hola}"/>
+		<p:panel id="panelBotones">
+			<p:commandButton id="btnBorrar" value="Borrar" actionListener="#{userController.deleteUsers}" update="tabla"/>
+		</p:panel>
+		<p:blockUI block="panelPrincipal" trigger="btnBorrar"/>
+		
+		
+		<br/>
+		<p:panel id="panelFormulario">
+			<p:outputLabel value="Nombre :" />
+			<h:inputText id="nameUser" value="#{userController.user.name}"></h:inputText>
+			<br/>
+			<br/>
+			<p:commandButton id="btnGuardar" value="Guardar" actionListener="#{userController.saveUser}" update="tabla nameUser" />	   						
+		</p:panel>
+		 <p:blockUI block="panelFormulario" trigger="btnGuardar"/>
+		
 		
 	</h:form>
+	
+	
+	
 </h:body>
 </html>

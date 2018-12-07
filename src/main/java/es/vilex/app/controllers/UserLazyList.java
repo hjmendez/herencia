@@ -20,18 +20,26 @@ import java.util.Map;
 import java.util.Optional;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
+import org.springframework.stereotype.Component;
 import es.vilex.app.entities.User;
 import es.vilex.app.respositories.UserDao;
 
+@Component
 public class UserLazyList extends LazyDataModel<User> {
 
+
+
+  @Autowired
   private UserDao dao;
 
-  public UserLazyList(UserDao userDao) {
-    this.dao = userDao;
-  }
+  // public UserLazyList(UserDao userDao) {
+  // this.dao = userDao;
+  // }
 
   public UserDao getUserDao() {
     return dao;
@@ -60,10 +68,15 @@ public class UserLazyList extends LazyDataModel<User> {
   @Override
   public List<User> load(int first, int pageSize, String sortField, SortOrder sortOrder,
       Map<String, Object> filters) {
-
     List<User> userList = new ArrayList<>();
-    // TODO ordenar <> sort
-    Page<User> result = dao.findAll(PageRequest.of((first / pageSize), pageSize));
+
+
+    Sort sort = Sort.by(Order.asc(sortField));
+    if (sortOrder.equals(SortOrder.DESCENDING)) {
+      sort = Sort.by(Order.desc(sortField));
+    }
+
+    Page<User> result = dao.findAll(PageRequest.of((first / pageSize), pageSize, sort));
     this.setRowCount((int) result.getTotalElements());
     this.setPageSize(pageSize);
     userList = result.getContent();
