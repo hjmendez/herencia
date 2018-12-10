@@ -1,0 +1,1 @@
+Usando la estrategia MappedSuperclass, la herencia solo es evidente en la clase, pero no en el modelo de entidad.

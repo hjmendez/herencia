@@ -1,0 +1,2 @@
+La estrategia de tabla única crea una tabla para cada jerarquía de clase.
+ Esta es también la estrategia predeterminada elegida por JPA si no especificamos una explícitamente.

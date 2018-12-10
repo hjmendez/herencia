@@ -1,0 +1,3 @@
+Dado que los registros de todas las entidades estarán en la misma tabla, Hibernate necesita una forma de diferenciarlas.
+De forma predeterminada, esto se hace a través de una columna discriminadora llamada DTYPE 
+que tiene el nombre de la entidad como un valor.

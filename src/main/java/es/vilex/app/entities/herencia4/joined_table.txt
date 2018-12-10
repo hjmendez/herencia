@@ -1,0 +1,3 @@
+Usando esta estrategia, cada clase en la jerarquía se asigna a su tabla.
+La única columna que aparece repetidamente en todas las tablas es el identificador, 
+que se usará para unirlas cuando sea necesario.
